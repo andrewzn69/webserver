@@ -29,4 +29,3 @@ ufw allow 'Nginx HTTP'
 ufw allow 'OpenSSH'
 ufw allow 22
 
-
