@@ -18,7 +18,12 @@ apt update
 apt upgrade -y
 
 # install necessary packages
-apt install -y nodejs npm nginx certbot python3-certbot-nginx
+apt install -y nginx certbot python3-certbot-nginx
+
+# dafuq?????
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - &&\
+sudo apt install -y nodejs
+
 npm i -g strapi gatsby-cli
 
 # start and enable nginx
