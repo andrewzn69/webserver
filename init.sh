@@ -42,13 +42,48 @@ cd grav
 sudo -u $user composer install --no-dev -o
 sudo -u $user bin/grav install
 
-
-# start and enable nginx
-systemctl start nginx
-systemctl enable nginx
-
 # ufw configuration
 ufw allow 'Nginx HTTP'
 ufw allow 'OpenSSH'
 ufw allow 22
 
+# creating template nginx config
+cat > /etc/nginx/sites-available/template <<EOF
+server {
+    listen 80;
+    server_name {DOMAIN};
+
+    root {ROOT};
+    index index.php index.html;
+
+    location / {
+        try_files \$uri \$uri/ /index.php?\$query_string;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;  # Adjust the PHP-FPM socket path as needed
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        fastcgi_param PHP_ADMIN_VALUE "open_basedir=/path/to/grav/folder:/tmp";
+    }
+
+    location ~* \.(?:css|js)$ {
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+
+    location ~* \.(?:jpg|jpeg|gif|png|ico|svg)$ {
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+}
+EOF
+
+# symlink it to sites-enabled
+ln -s "$nginx_config_file" "/etc/nginx/sites-enabled/grav.conf"
+
+# start and enable nginx
+systemctl start nginx
+systemctl enable nginx
