@@ -30,12 +30,10 @@ apt update
 apt upgrade -y
 
 # install necessary packages
-apt install -y nginx php php-cli certbot python3-certbot-nginx unzip
+apt install -y nginx php php-cli php-curl php-zip php-dom php-gd certbot python3-certbot-nginx unzip
 
 # install composer
 sudo -u $user curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
-sudo -u $user HASH=`curl -sS https://composer.github.io/installer.sig`
-sudo -u $user php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 # install grav
